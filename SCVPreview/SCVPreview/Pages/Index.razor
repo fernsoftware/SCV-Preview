@@ -1,7 +1,9 @@
 ﻿@page "/"
 
 @using System.IO
-@using SCVPreview.SCV 
+@using SCVPreview.SCV
+
+@inject NavigationManager _navigationManager 
 
 <h1 class="ui header">
     Single-Customer-View Preview
@@ -36,6 +38,7 @@
                 <th class="collapsing">Address</th>
                 <th class="collapsing">Email</th>
                 <th class="collapsing">Account</th>
+                <th class="collapsing"></th>
             </tr>
         </thead>
         <tbody>
@@ -52,6 +55,11 @@
                         }
                     </td>
                     <td>@((MarkupString)(@record.AccountFormatted()))</td>
+                    <td>
+                        <button class="ui basic icon button" @onclick="@(e => RowClicked(e, record.Identifier))">
+                            <i class="right arrow icon"></i>
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -87,5 +95,15 @@
         }
 
         this.StateHasChanged();
+    }
+
+    private void RowClicked(MouseEventArgs e, string identifier)
+    {
+        var record = records.FirstOrDefault(x => x.Identifier == identifier);
+
+        if (record != null)
+        {
+            _navigationManager.NavigateTo($"/details?id={record.Identifier}");
+        }
     }
 }

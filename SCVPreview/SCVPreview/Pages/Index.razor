@@ -31,9 +31,9 @@
     <table class="ui celled striped table">
         <thead>
             <tr>
+                <th>SCV ID</th>
                 <th>Name</th>
                 <th>Address</th>
-                <th>Identifier</th>
             </tr>
         </thead>
         <tbody>
@@ -41,8 +41,8 @@
             {
                 <tr>
                     <td>@record.Identifier</td>
-                    <td>@record.Identifier</td>
-                    <td>@record.Identifier</td>
+                    <td>@record.NameFormatted()</td>
+                    <td>@record.AddressFormatted()</td>
                 </tr>
             }
         </tbody>
@@ -59,13 +59,21 @@
         int maxAllowedFiles = 1;
         int maxFileSize = 1024 * 1024 * 15;
 
+        string line;
+
         foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
         {
             using (var reader = new StreamReader(file.OpenReadStream(maxFileSize)))
             {
-                var line = await reader.ReadLineAsync();
+                while ((line = await reader.ReadLineAsync()) != null)
+                {
+                    var split = line.Split("|");
 
-                records.Add(new SCV(line));
+                    if (split.Length == 51)
+                    {
+                        records.Add(new SCV(line));
+                    }
+                }
             }
         }
 

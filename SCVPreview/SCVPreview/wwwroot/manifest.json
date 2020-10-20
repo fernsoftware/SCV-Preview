@@ -1,10 +1,10 @@
 {
-  "name": "SCVPreview",
-  "short_name": "SCVPreview",
+  "name": "SCV Preview",
+  "short_name": "SCV Preview",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#03173d",
+  "theme_color": "#00815d",
   "icons": [
     {
       "src": "icon-512.png",

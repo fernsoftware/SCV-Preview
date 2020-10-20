@@ -4,7 +4,7 @@
 @using SCVPreview.SCV 
 
 <h1 class="ui header">
-    Single Customer View Preview
+    Single-Customer-View Preview
     <div class="sub header">
         Upload a SCV file to review its contents
     </div>
@@ -31,9 +31,11 @@
     <table class="ui celled striped table">
         <thead>
             <tr>
-                <th>SCV ID</th>
+                <th class="collapsing">SCV ID</th>
                 <th>Name</th>
-                <th>Address</th>
+                <th class="collapsing">Address</th>
+                <th class="collapsing">Email</th>
+                <th class="collapsing">Account</th>
             </tr>
         </thead>
         <tbody>
@@ -41,8 +43,15 @@
             {
                 <tr>
                     <td>@record.Identifier</td>
-                    <td>@record.NameFormatted()</td>
-                    <td>@record.AddressFormatted()</td>
+                    <td class="single line">@record.NameFormatted()</td>
+                    <td>@((MarkupString)(@record.AddressFormatted()))</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(record.Email))
+                        {
+                            <a href="mailto:@record.Email">@record.Email</a>
+                        }
+                    </td>
+                    <td>@((MarkupString)(@record.AccountFormatted()))</td>
                 </tr>
             }
         </tbody>

@@ -1,5 +1,8 @@
 ﻿@page "/"
 
+@using System.IO
+@using SCVPreview.SCV 
+
 <h1 class="ui header">
     Single Customer View Preview
     <div class="sub header">
@@ -15,6 +18,57 @@
     Select a file
 </h3>
 
-<input type="file" /> 
+<form class="ui form">
+    <div class="field">
+        <div class="ui input">
+            <InputFile OnChange="@OnInputFileChange" />
+        </div>
+    </div>
+</form>
 
-@*https://github.com/Tewr/BlazorFileReader*@
+@if (records.Any())
+{
+    <table class="ui celled striped table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Identifier</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in records)
+            {
+                <tr>
+                    <td>@record.Identifier</td>
+                    <td>@record.Identifier</td>
+                    <td>@record.Identifier</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code
+{
+    public List<SCV> records = new List<SCV>();
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        int maxAllowedFiles = 1;
+        int maxFileSize = 1024 * 1024 * 15;
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            using (var reader = new StreamReader(file.OpenReadStream(maxFileSize)))
+            {
+                var line = await reader.ReadLineAsync();
+
+                records.Add(new SCV(line));
+            }
+        }
+
+        this.StateHasChanged();
+    }
+}

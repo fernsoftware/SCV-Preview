@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
+using Blazored.LocalStorage;
+
 namespace SCVPreview
 {
     public class Program
@@ -19,6 +21,8 @@ namespace SCVPreview
             {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
             });
+
+            builder.Services.AddBlazoredLocalStorage();
 
             await builder.Build().RunAsync();
         }

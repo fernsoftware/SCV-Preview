@@ -1,109 +1,172 @@
 ﻿@page "/"
 
 @using System.IO
-@using SCVPreview.SCV
 
 @inject NavigationManager _navigationManager 
+@inject ILocalStorageService _storageService
 
-<h1 class="ui header">
-    Single-Customer-View Preview
-    <div class="sub header">
-        Upload a SCV file to review its contents
+<div class="row">
+    <div class="column">
+
+        <h1 class="ui header">
+            Single-Customer-View
+            <div class="sub header">View your SCV files online</div>
+        </h1>
+
     </div>
-</h1>
+</div>
 
-<p>
-    Under the <a href="http://www.prarulebook.co.uk/rulebook/Content/Part/304147/">Depositor Protection Rules</a>, FSCS must pay compensation to customers within 15 business days of a deposit taker failing. We target ourselves to exceed this and pay within seven days, so that customers can get their money back as soon as possible.
-</p>
+<div class="row">
 
-<h3 class="ui header">
-    Select a file
-</h3>
+    <div class="ten wide column">
 
-<form class="ui form">
-    <div class="field">
-        <div class="ui input">
-            <InputFile OnChange="@OnInputFileChange" />
+        <p>
+            A Single Customer View (SCV) is where all the data you hold about each of your customers is stored and consolidated into one single, easy to read, record in your database.
+        </p>
+
+        <p>
+            This is becoming more of a challenge with organisations often holding multiple records for one same contact due to the multiple touch points that the average customer faces when dealing with an organisation. Online forms, face to face discussions and call centres all collect data that needs to be kept clean of duplicate records to maintain the SCV.
+        </p>
+
+        <form class="ui form">
+            <div class="required field">
+                <label>Select a SCV file (.csv)</label>
+                <div class="ui input">
+                    <InputFile OnChange="@OnInputFileChange" />
+                </div>
+            </div>
+        </form>
+
+        <div id="div-controls" class="ui basic segment">
+            <button class="ui right labeled icon button" @onclick="@ClearClicked">
+                <i class="trash icon"></i>
+                Clear
+            </button>
         </div>
     </div>
-</form>
 
-@if (records.Any())
-{
-    <table class="ui celled striped table">
-        <thead>
-            <tr>
-                <th class="collapsing">SCV ID</th>
-                <th>Name</th>
-                <th class="collapsing">Address</th>
-                <th class="collapsing">Email</th>
-                <th class="collapsing">Account</th>
-                <th class="collapsing"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var record in records)
-            {
-                <tr>
-                    <td>@record.Identifier</td>
-                    <td class="single line">@record.NameFormatted()</td>
-                    <td>@((MarkupString)(@record.AddressFormatted()))</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(record.Email))
-                        {
-                            <a href="mailto:@record.Email">@record.Email</a>
-                        }
-                    </td>
-                    <td>@((MarkupString)(@record.AccountFormatted()))</td>
-                    <td>
-                        <button class="ui basic icon button" @onclick="@(e => RowClicked(e, record.Identifier))">
-                            <i class="right arrow icon"></i>
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    <div class="four wide right floated column">
+        <img class="ui image" src="img/undraw_account_490v.svg" />
+    </div>
 
+</div>
+
+<div class="row">
+
+    <div class="column">
+
+        @if (records.Any())
+        {
+            <table class="ui celled striped table">
+                <thead>
+                    <tr>
+                        <th class="collapsing">SCV ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th class="collapsing">Email</th>
+                        <th class="collapsing">Account</th>
+                        <th class="collapsing">Balance</th>
+                        <th class="collapsing"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var record in records)
+                    {
+                        <tr>
+                            <td>@record.Identifier</td>
+                            <td class="single line">@record.NameFormatted()</td>
+                            <td>@((MarkupString)(@record.AddressFormatted()))</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(record.Email))
+                                {
+                                    <a href="mailto:@record.Email">@record.Email</a>
+                                }
+                            </td>
+                            <td>@record.ProductName</td>
+                            <td>@record.Balance</td>
+                            <td>
+                                <button class="ui basic icon button" @onclick="@(e => RowClicked(e, record.Identifier))">
+                                    <i class="right arrow icon"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+
+</div>
 
 @code
 {
-    public List<SCV> records = new List<SCV>();
+    List<SCV> records;
 
-    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    protected override async Task OnInitializedAsync()
     {
+        records = new List<SCV>();
+
+        for (var i = 0; i < await _storageService.LengthAsync(); i++)
+        {
+            var key = await _storageService.KeyAsync(i);
+            var scv = await _storageService.GetItemAsync<SCV>(key);
+
+            records.Add(scv);
+        }
+
+        this.StateHasChanged();
+    }
+
+    async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        await _storageService.ClearAsync();
+
         int maxAllowedFiles = 1;
         int maxFileSize = 1024 * 1024 * 15;
 
         string line;
 
-        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
-        {
-            using (var reader = new StreamReader(file.OpenReadStream(maxFileSize)))
-            {
-                while ((line = await reader.ReadLineAsync()) != null)
-                {
-                    var split = line.Split("|");
+        IBrowserFile file = e.GetMultipleFiles(maxAllowedFiles).SingleOrDefault();
 
-                    if (split.Length == 51)
-                    {
-                        records.Add(new SCV(line));
-                    }
+        if (file == null)
+        {
+            return;
+        }
+
+        using (var reader = new StreamReader(file.OpenReadStream(maxFileSize)))
+        {
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                try
+                {
+                    var scv = new SCV(line);
+                    await _storageService.SetItemAsync<SCV>(scv.Identifier, scv);
+                    records.Add(scv);
                 }
+                catch
+                { }
             }
         }
 
         this.StateHasChanged();
     }
 
-    private void RowClicked(MouseEventArgs e, string identifier)
+    void RowClicked(MouseEventArgs e, string identifier)
     {
         var record = records.FirstOrDefault(x => x.Identifier == identifier);
 
         if (record != null)
         {
-            _navigationManager.NavigateTo($"/details?id={record.Identifier}");
+            _navigationManager.NavigateTo($"/scv/{record.Identifier}");
         }
+    }
+
+    async Task ClearClicked()
+    {
+        records.Clear();
+        await _storageService.ClearAsync();
+
+        this.StateHasChanged();
     }
 }

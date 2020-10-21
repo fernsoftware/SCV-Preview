@@ -1,1 +1,62 @@
-﻿@page "/details" 
+﻿@page "/scv/{identifier}" 
+
+@inject NavigationManager _navigationManager 
+@inject ILocalStorageService _storageService
+
+<div class="row">
+    <div class="column">
+
+        <h1 class="ui header">
+            Single-Customer-View
+            <div class="sub header">View your SCV files online</div>
+        </h1>
+
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="column">
+
+        @if (scv != null)
+        {
+            <form class="ui form">
+                <div class="three fields">
+                    <div class="five wide required field">
+                        <label>Forename</label>
+                        <input type="text" @bind-value="scv.Forename" />
+                    </div>
+                    <div class="five wide field">
+                        <label>Middle name </label>
+                        <input type="text" />
+                    </div>
+                    <div class="six wide required field">
+                        <label>Surname</label>
+                        <input type="text" @bind-value="scv.Surname" />
+                    </div>
+                </div>
+            </form>
+        }
+
+    </div>
+
+</div>
+
+@code
+{
+    [Parameter]
+    public string Identifier { get; set; }
+
+    SCV scv;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!await _storageService.ContainKeyAsync(Identifier))
+        {
+            _navigationManager.NavigateTo("/");
+            return;
+        }
+
+        scv = await _storageService.GetItemAsync<SCV>(Identifier);
+    }
+}

@@ -5,6 +5,9 @@ namespace SCVPreview.SCV
 {
     public class SCV
     {
+        public SCV()
+        { }
+
         public SCV(string line)
         {
             var split = line.Split("|");
@@ -144,16 +147,6 @@ namespace SCVPreview.SCV
                 sb.Append("<br>");
                 sb.Append(Country);
             }
-
-            return sb.ToString();
-        }
-
-        public string AccountFormatted()
-        {
-            var sb = new StringBuilder($"{ProductName}");
-
-            sb.Append("<br>");
-            sb.Append(Balance.ToString("C"));
 
             return sb.ToString();
         }

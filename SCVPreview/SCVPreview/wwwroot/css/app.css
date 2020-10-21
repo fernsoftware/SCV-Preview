@@ -1,16 +1,16 @@
 ﻿header {
     padding: 5px 0;
-    background-color: #02724c;
+    background-color: #00815d;
     border-bottom: 1px solid #bebebe;
 }
 
     header > .ui.container > .ui.menu {
-        background-color: #02724c;
+        background-color: #00815d;
         border-radius: 0;
         border: none;
     }
 
-    header > #desktop-menu > .ui.container > .ui.menu > .item:first-child {
+    header > .ui.container > .ui.menu > .item:first-child {
         padding-left: 0;
     }
 
@@ -94,6 +94,11 @@ h6.ui.header {
         #main > .ui.container > .secondary.menu {
             margin-bottom: 2rem;
         }
+}
+
+#div-controls {
+    padding: 0;
+    margin: 1.5rem 0 0 0;
 }
 
 #blazor-error-ui {

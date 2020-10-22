@@ -15,31 +15,102 @@
 </div>
 
 <div class="row">
-
     <div class="column">
+
+        <button class="ui basic labeled icon button" @onclick="@(e => _navigationManager.NavigateTo("/"))">
+            <i class="left arrow icon"></i>
+            Back
+        </button>
 
         @if (scv != null)
         {
-            <form class="ui form">
-                <div class="three fields">
-                    <div class="five wide required field">
-                        <label>Forename</label>
-                        <input type="text" @bind-value="scv.Forename" />
+            <div class="ui segment">
+                <form class="ui form">
+                    <h3 class="ui dividing header">Personal Information</h3>
+                    <div class="three fields">
+                        <div class="five wide required field">
+                            <label>Forename</label>
+                            <input type="text" @bind-value="scv.Forename" />
+                        </div>
+                        <div class="five wide field">
+                            <label>Middle name</label>
+                            <input type="text" @bind-value="scv.MiddleName" />
+                        </div>
+                        <div class="six wide required field">
+                            <label>Surname</label>
+                            <input type="text" @bind-value="scv.Surname" />
+                        </div>
                     </div>
-                    <div class="five wide field">
-                        <label>Middle name </label>
-                        <input type="text" />
+                    <div class="two fields">
+                        <div class="four wide field">
+                            <label>Phone</label>
+                            <input type="text" @bind-value="scv.Phone" />
+                        </div>
+                        <div class="six wide required field">
+                            <label>Email</label>
+                            <input type="text" @bind-value="scv.Email" />
+                        </div>
                     </div>
-                    <div class="six wide required field">
-                        <label>Surname</label>
-                        <input type="text" @bind-value="scv.Surname" />
+                    <div class="fields">
+                        <div class="four wide field">
+                            <label>Birthdate</label>
+                            <input type="text" @bind-value="scv.DateOfBirthFormatted()" />
+                        </div>
                     </div>
-                </div>
-            </form>
+                    <h3 class="ui dividing header">Contact Information</h3>
+                    <div class="sixteen wide required field">
+                        <label>Address</label>
+                        <div class="two fields">
+                            <div class="twelve wide required field">
+                                <input type="text" @bind-value="scv.Address1" />
+                            </div>
+                            <div class="four wide field">
+                                <input type="text" @bind-value="scv.Address2" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="three fields">
+                        <div class="six wide required field">
+                            <label>City</label>
+                            <input type="text" @bind-value="scv.Address3" />
+                        </div>
+                        <div class="six wide required field">
+                            <label>County</label>
+                            <input type="text" @bind-value="scv.Address4" />
+                        </div>
+                        <div class="three wide required field">
+                            <label>Post code</label>
+                            <input type="text" @bind-value="scv.PostCode" />
+                        </div>
+                    </div>
+                    <div class="fields">
+                        <div class="six wide required field">
+                            <label>Country</label>
+                            <input type="text" @bind-value="scv.Country" />
+                        </div>
+                    </div>
+                    <h3 class="ui dividing header">Account Information</h3>
+                    <div class="fields">
+                        <div class="eight wide required field">
+                            <label>Financial Product</label>
+                            <input type="text" @bind-value="scv.ProductName" />
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="four wide field">
+                            <label>Recent transactions?</label>
+                            <input type="text" @bind-value="scv.RecentTransactions" />
+                        </div>
+                        <div class="six wide required field">
+                            <label>Balance</label>
+                            <input type="text" @bind-value="scv.Balance" />
+                        </div>
+                    </div>
+                </form>
+            </div>
         }
 
     </div>
-
 </div>
 
 @code

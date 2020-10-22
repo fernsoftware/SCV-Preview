@@ -109,13 +109,8 @@
 
         for (var i = 0; i < await _storageService.LengthAsync(); i++)
         {
-            var key = await _storageService.KeyAsync(i);
-            var scv = await _storageService.GetItemAsync<SCV>(key);
-
-            records.Add(scv);
+            records.Add(await _storageService.GetItemAsync<SCV>(await _storageService.KeyAsync(i)));
         }
-
-        this.StateHasChanged();
     }
 
     async Task OnInputFileChange(InputFileChangeEventArgs e)
@@ -141,15 +136,15 @@
                 try
                 {
                     var scv = new SCV(line);
+
                     await _storageService.SetItemAsync<SCV>(scv.Identifier, scv);
+
                     records.Add(scv);
                 }
                 catch
                 { }
             }
         }
-
-        this.StateHasChanged();
     }
 
     void RowClicked(MouseEventArgs e, string identifier)
@@ -164,9 +159,7 @@
 
     async Task ClearClicked()
     {
-        records.Clear();
         await _storageService.ClearAsync();
-
-        this.StateHasChanged();
+        records.Clear();
     }
 }

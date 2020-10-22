@@ -15,9 +15,12 @@ namespace SCVPreview.SCV
             Identifier = split[0];
             Title = split[1];
             Forename = split[2];
+            MiddleName = split[3];
             Surname = split[5];
-            NationInsuranceNumber = split[9];
-            CompanyNumber = split[13];
+            PreviousName = split[6];
+            NationInsuranceNumber = split[7];
+            PassportNumber = split[8];
+            CompanyNumber = split[11];
             Address1 = split[14];
             Address2 = split[15];
             Address3 = split[16];
@@ -55,9 +58,15 @@ namespace SCVPreview.SCV
 
         public string Forename { get; set; }
 
+        public string MiddleName { get; set; }
+
         public string Surname { get; set; }
 
+        public string PreviousName { get; set; }
+
         public string NationInsuranceNumber { get; set; }
+
+        public string PassportNumber { get; set; }
 
         public string CompanyNumber { get; set; }
 
@@ -103,6 +112,16 @@ namespace SCVPreview.SCV
         public string NameFormatted()
         {
             return $"{Title}. {Forename} {Surname}";
+        }
+
+        public string DateOfBirthFormatted()
+        {
+            if (DateOfBirth.HasValue)
+            {
+                return DateOfBirth.Value.ToString("d");
+            }
+
+            return string.Empty;
         }
 
         public string Age()

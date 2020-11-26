@@ -1,6 +1,6 @@
-﻿@page "/scv/{identifier}" 
+﻿@page "/scv/{identifier}"
 
-@inject NavigationManager _navigationManager 
+@inject NavigationManager _navigationManager
 @inject ILocalStorageService _storageService
 
 <div class="row">
@@ -10,7 +10,6 @@
             Single-Customer-View
             <div class="sub header">View your SCV files online</div>
         </h1>
-
     </div>
 </div>
 
@@ -54,7 +53,7 @@
                     <div class="fields">
                         <div class="four wide field">
                             <label>Birthdate</label>
-                            <input type="text" @bind-value="scv.DateOfBirthFormatted()" />
+                            <input type="text" value="@scv.DateOfBirthFormatted()" />
                         </div>
                     </div>
                     <h3 class="ui dividing header">Contact Information</h3>
@@ -109,7 +108,6 @@
                 </form>
             </div>
         }
-
     </div>
 </div>
 
